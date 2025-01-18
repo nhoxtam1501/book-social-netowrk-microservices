@@ -53,7 +53,7 @@ class ProfileServiceApplicationTests {
 
 
     @Test
-    void shouldCreateUserProfile() throws Exception {
+    void shouldCreateThenGetUserProfile() throws Exception {
         //*context-path must not to specify in urlTemplate
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
