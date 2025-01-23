@@ -6,20 +6,20 @@ import com.devteria.profile.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.filter.RequestContextFilter;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/internal/users")
 @Slf4j
 @RequiredArgsConstructor
-public class UserProfileController {
+public class InternalUserProfileController {
     private final UserProfileService service;
     private final RequestContextFilter requestContextFilter;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserProfileCreationResponse> getUserProfile(@PathVariable String userId) {
-        return ResponseEntity.ok(service.getUserProfile(userId));
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserProfileCreationResponse createUserProfile(@RequestBody UserProfileCreationRequest request) {
+        return service.createUserProfile(request);
     }
 }
