@@ -13,12 +13,17 @@ spring:
         - id: identity_service
           uri: http://localhost:8080
           predicates:
-          - Path=${app.api-prefix}/identity/** #only exposes needed endpoints.
+            - Path=${app.api-prefix}/identity/** #only exposes needed endpoints.
           filters:
-          - StripPrefix=2 #this will skip the /api/v1 as 2 prefixes and call to http://localhost:8080/identity/**
+            - StripPrefix=2 #this will skip the /api/v1 as 2 prefixes and call to http://localhost:8080/identity/**
         - id: profile_service
           uri: http://localhost:8081
           predicates:
-          - Path=${app.api-prefix}/profile/users/**
+            - Path=${app.api-prefix}/profile/users/**
           filters:
-          - StripPrefix=2
+            - StripPrefix=2
+
+services:
+  urls:
+    identity_service:
+      http://localhost:8080/identity
