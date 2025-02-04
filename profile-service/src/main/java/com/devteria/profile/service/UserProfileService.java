@@ -7,7 +7,10 @@ import com.devteria.profile.mapper.UserProfileMapper;
 import com.devteria.profile.repositories.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +30,10 @@ public class UserProfileService {
         UserProfile userProfile = repository.findById(userId).orElseThrow(() -> new RuntimeException("Profile not found"));
         log.info("Found user profile with id : {}", userId);
         return mapper.toResponse(userProfile);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserProfileCreationResponse> getAllUserProfiles() {
+        return repository.findAll().stream().map(mapper::toResponse).toList();
     }
 }

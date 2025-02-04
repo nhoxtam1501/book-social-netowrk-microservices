@@ -1,0 +1,380 @@
+{
+	"info": {
+		"_postman_id": "807bf320-8f2f-4391-b263-02ebd2b43794",
+		"name": "book social network microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19249112"
+	},
+	"item": [
+		{
+			"name": "identity service",
+			"item": [
+				{
+					"name": "create user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Lee Xiao Long\",\r\n    \"password\": \"12345678\",\r\n    \"firstName\": \"Lee\",\r\n    \"lastName\": \"Bruce\",\r\n    \"dob\": \"1935-04-21\",\r\n    \"city\": \"Hongkong\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/identity/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"identity",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "introspect token is valid",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"eyayzydas.dsad.dsadqw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/identity/auth/introspect",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"identity",
+								"auth",
+								"introspect"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/identity/auth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"identity",
+								"auth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "profile service",
+			"item": [
+				{
+					"name": "create user profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Spider\",\r\n    \"lastName\": \"Man\",\r\n    \"dob\": \"2001-01-26\",\r\n    \"city\": \"New York\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri_local}}:{{profile_port}}/{{profile_path}}/users",
+							"host": [
+								"{{uri_local}}"
+							],
+							"port": "{{profile_port}}",
+							"path": [
+								"{{profile_path}}",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{uri_local}}:{{profile_port}}/{{profile_path}}/users/9978f4f4-67f6-4f28-bb48-9531255eda94",
+							"host": [
+								"{{uri_local}}"
+							],
+							"port": "{{profile_port}}",
+							"path": [
+								"{{profile_path}}",
+								"users",
+								"9978f4f4-67f6-4f28-bb48-9531255eda94"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "api gateway",
+			"item": [
+				{
+					"name": "get user profile through gateway",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJkZXZ0ZXJpYS5jb20iLCJzdWIiOiJhZG1pbiIsImV4cCI6MTczNzYyNzcyMCwiaWF0IjoxNzM3NjI0MTIwLCJqdGkiOiJhM2NkMTIzZS01MTYzLTQ2ZDctYTVkZS1kMTgzZmZhNDVjNTMiLCJzY29wZSI6IlJPTEVfQURNSU4ifQ.umo6tWAlbmxiF3AzKuzPGkSB9gm5jTqmkxq-LsWB6D9mX-OJneBDHZuZ0LDbhZ-mWqhejH7s80MWoJwHyUs1Pg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8888/api/v1/profile/users/81021af3-4e0e-491a-af15-14d7bc6df6bb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"v1",
+								"profile",
+								"users",
+								"81021af3-4e0e-491a-af15-14d7bc6df6bb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get token through gateway",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/v1/identity/auth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"auth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "introspect through gateway",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"eyayzydas.dsad.dsadqw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/v1/identity/auth/introspect",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"auth",
+								"introspect"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"test04\",\r\n    \"firstName\": \"test04\",\r\n    \"lastName\": \"haha\",\r\n    \"dob\": \"2002-01-12\",\r\n    \"password\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8888/api/v1/identity/users/registration",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"users",
+								"registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all user profiles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJuaG94dGFtMTUwMS5jb20iLCJzdWIiOiJ0ZXN0MDEiLCJleHAiOjE3Mzg2NzMwNzcsImlhdCI6MTczODY2OTQ3NywianRpIjoiMzc3OWRhZmMtMThhYi00MzE5LWJlMjAtOWIxMDA5NmI1NmRhIiwic2NvcGUiOiJST0xFX1VTRVIifQ.RJIrEn2NHt6glcwCAVCdVihjoGaLZN_sl0RZg8VGPRCv5Bo-AoIYZRYQnAKmrsIXldZvH6Q_1o9SBgAoYKWO1Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8888/api/v1/profile/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"v1",
+								"profile",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "uri_local",
+			"value": "http://localhost",
+			"type": "string"
+		},
+		{
+			"key": "profile_port",
+			"value": "8081",
+			"type": "string"
+		},
+		{
+			"key": "profile_path",
+			"value": "profile",
+			"type": "string"
+		}
+	]
+}
