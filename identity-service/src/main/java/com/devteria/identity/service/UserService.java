@@ -21,6 +21,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.HashSet;
 import java.util.List;
@@ -47,10 +49,11 @@ public class UserService {
         roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
 
         user.setRoles(roles);
-        user = userRepository.save(user);
 
         var profileRequest = profileMapper.toProfile(request);
         profileRequest.setUserId(user.getId());
+
+        user = userRepository.save(user);
         var profileResponse = profileClient.createProfile(profileRequest);
 
         log.info("Profile created: {}", profileResponse.toString());

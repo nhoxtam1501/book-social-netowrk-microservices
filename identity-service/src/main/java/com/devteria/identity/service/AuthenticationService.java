@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -56,18 +57,10 @@ public class AuthenticationService {
     @Value("${jwt.refreshable-duration}")
     protected long REFRESHABLE_DURATION;
 
-    //    public IntrospectResponse introspect(IntrospectRequest request)  {
-//        var token = request.getToken();
-//        boolean isValid = true;
-//
-//        try {
-//            verifyToken(token, false);
-//        } catch (AppException | JOSEException | ParseException e) {
-//            isValid = false;
-//        }
-//
-//        return IntrospectResponse.builder().valid(isValid).build();
-//    }
+    @NonFinal
+    @Value("${jwt.trusted_issuers}")
+    protected List<String> trustedIssuers;
+
     public IntrospectResponse introspect(IntrospectRequest request) {
         var token = request.getToken();
         boolean isValid = true;
@@ -175,6 +168,9 @@ public class AuthenticationService {
         if (!(verified && expiryTime.after(new Date()))) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+
+        if(!trustedIssuers.contains(signedJWT.getJWTClaimsSet().getIssuer()))
             throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         return signedJWT;
