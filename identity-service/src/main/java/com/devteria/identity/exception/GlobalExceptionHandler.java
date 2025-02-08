@@ -54,6 +54,7 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> handlingValidation(MethodArgumentNotValidException exception) {
         String enumKey = exception.getFieldError().getDefaultMessage();
@@ -89,5 +90,16 @@ public class GlobalExceptionHandler {
         String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
 
         return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
+    }
+
+    @ExceptionHandler(value = SomethingWentWrongException.class)
+    ResponseEntity<ApiResponse> handlingSomethingWentWrongException(SomethingWentWrongException exception) {
+        ErrorCode errorCode = ErrorCode.SOMETHING_WENT_WRONG;
+
+        return ResponseEntity.status(errorCode.getStatusCode())
+                .body(ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build());
     }
 }

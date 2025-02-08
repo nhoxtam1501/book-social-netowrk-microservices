@@ -8,11 +8,14 @@ import com.devteria.identity.entity.Role;
 import com.devteria.identity.entity.User;
 import com.devteria.identity.exception.AppException;
 import com.devteria.identity.exception.ErrorCode;
+import com.devteria.identity.exception.SomethingWentWrongException;
 import com.devteria.identity.mapper.ProfileMapper;
 import com.devteria.identity.mapper.UserMapper;
 import com.devteria.identity.proxies.ProfileClient;
 import com.devteria.identity.repository.RoleRepository;
 import com.devteria.identity.repository.UserRepository;
+import feign.RetryableException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,9 +24,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
@@ -39,6 +41,7 @@ public class UserService {
     ProfileMapper profileMapper;
     ProfileClient profileClient;
 
+    @CircuitBreaker(name = "createUser", fallbackMethod = "retryLater")
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
 
@@ -67,6 +70,16 @@ public class UserService {
         User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         return userMapper.toUserResponse(user);
+    }
+
+    public UserResponse retryLater(RetryableException exception) {
+//        throw new SomethingWentWrongException("Something went wrong. Please try again later");
+        return UserResponse.builder()
+                .dob(LocalDate.now())
+                .firstName("error")
+                .lastName("error")
+                .username("haha")
+                .build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
